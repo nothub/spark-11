@@ -2,15 +2,16 @@
 [![](https://img.shields.io/github/license/perwendel/spark.svg)](./LICENSE)
 Spark3-JDK17 - a tiny web framework for Java 9+!
 
-**Spark 3-JDK17 is in the making!**
+**Spark 3-JDK17 is in SNAPSHOT repo!**
 
 ```xml
 <dependency>
-    <groupId>com.sparkjava</groupId>
+    <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
     <version>3-JDK17-SNAPSHOT</version>
 </dependency>
 ```
+Due to some issues, the parent got changed into `org.zoomba-lang` that we own.
 
 Sponsor the original project here https://github.com/sponsors/perwendel
 
@@ -37,7 +38,7 @@ Getting started
 
 ```xml
 <dependency>
-    <groupId>com.sparkjava</groupId>
+    <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
     <version>3-JDK17-SNAPSHOT</version>
 </dependency>
