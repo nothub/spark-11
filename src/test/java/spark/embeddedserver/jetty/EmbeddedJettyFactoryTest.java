@@ -36,7 +36,7 @@ public class EmbeddedJettyFactoryTest {
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, exceptionMapper, false);
 
         embeddedServer.trustForwardHeaders(true);
-        embeddedServer.ignite("localhost", 6757, null, 100, 10, 10000);
+        embeddedServer.ignite("localhost", 6757, false, null, 100, 10, 10000);
 
         verify(jettyServerFactory, times(1)).create(100, 10, 10000);
         verifyNoMoreInteractions(jettyServerFactory);
@@ -57,7 +57,7 @@ public class EmbeddedJettyFactoryTest {
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, exceptionMapper, false);
 
         embeddedServer.trustForwardHeaders(true);
-        embeddedServer.ignite("localhost", 6758, null, 0, 0, 0);
+        embeddedServer.ignite("localhost", 6758, false, null, 0, 0, 0);
 
         verify(jettyServerFactory, times(1)).create(threadPool);
         verifyNoMoreInteractions(jettyServerFactory);
@@ -76,7 +76,7 @@ public class EmbeddedJettyFactoryTest {
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, exceptionMapper, false);
 
         embeddedServer.trustForwardHeaders(true);
-        embeddedServer.ignite("localhost", 6759, null, 100, 10, 10000);
+        embeddedServer.ignite("localhost", 6759, false, null, 100, 10, 10000);
 
         verify(jettyServerFactory, times(1)).create(100, 10, 10000);
         verifyNoMoreInteractions(jettyServerFactory);
@@ -94,7 +94,7 @@ public class EmbeddedJettyFactoryTest {
         final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, false);
         embeddedServer.trustForwardHeaders(true);
-        embeddedServer.ignite("localhost", 6759, null, 100, 10, 10000);
+        embeddedServer.ignite("localhost", 6759, false, null, 100, 10, 10000);
 
         assertFalse(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly());
     }

@@ -18,11 +18,8 @@ package spark.embeddedserver.jetty;
 
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jetty.server.ForwardedRequestCustomizer;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import spark.ssl.SslStores;
@@ -39,14 +36,16 @@ public class SocketConnectorFactory {
      * @param server Jetty server
      * @param host   host
      * @param port   port
+     * @param usHTTP2 if true use HTTP2 connection, else HTTP1.x
      * @return - a server jetty
      */
-    public static ServerConnector createSocketConnector(Server server, String host, int port, boolean trustForwardHeaders) {
+    public static ServerConnector createSocketConnector(Server server, String host, int port, boolean usHTTP2, boolean trustForwardHeaders) {
         Assert.notNull(server, "'server' must not be null");
         Assert.notNull(host, "'host' must not be null");
 
-        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
-        ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
+        final AbstractConnectionFactory connectionFactory =  usHTTP2 ?
+            createHttp2ConnectionFactory(trustForwardHeaders): createHttpConnectionFactory(trustForwardHeaders);
+        ServerConnector connector = new ServerConnector(server, connectionFactory);
         initializeConnector(connector, host, port);
         return connector;
     }
@@ -59,12 +58,14 @@ public class SocketConnectorFactory {
      * @param sslStores the security sslStores.
      * @param host      host
      * @param port      port
+     * @param useHTTP2  if true return HTTP2 enabled connector, else return HTTP1.x connector
      * @return a ssl socket jetty
      */
     public static ServerConnector createSecureSocketConnector(Server server,
                                                               String host,
                                                               int port,
                                                               SslStores sslStores,
+                                                              boolean useHTTP2,
                                                               boolean trustForwardHeaders) {
         Assert.notNull(server, "'server' must not be null");
         Assert.notNull(host, "'host' must not be null");
@@ -116,4 +117,11 @@ public class SocketConnectorFactory {
         return new HttpConnectionFactory(httpConfig);
     }
 
+    private static HTTP2ServerConnectionFactory createHttp2ConnectionFactory(boolean trustForwardHeaders) {
+        HttpConfiguration httpConfig = new HttpConfiguration();
+        httpConfig.setSecureScheme("https");
+        if(trustForwardHeaders)
+            httpConfig.addCustomizer(new ForwardedRequestCustomizer());
+        return new HTTP2ServerConnectionFactory(httpConfig);
+    }
 }

@@ -6,7 +6,6 @@ import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.junit.AfterClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -44,7 +43,33 @@ public class EmbeddedServersTest {
         assertNotNull(embeddedServer);
 
         embeddedServer.trustForwardHeaders(true);
-        embeddedServer.ignite("localhost", 0, null, 0, 0, 0);
+        embeddedServer.ignite("localhost", 0, false, null, 0, 0, 0);
+
+        assertTrue(requestLogFile.exists());
+        embeddedServer.extinguish();
+        verify(serverFactory).create(0, 0, 0);
+    }
+
+
+    @Test
+    public void testAddAndCreate_whenCreate_createsCustomServerHTTP2() throws Exception {
+        // Create custom Server
+        Server server = new Server();
+        File requestLogDir = temporaryFolder.newFolder();
+        File requestLogFile = new File(requestLogDir, "request.log");
+        server.setRequestLog(new CustomRequestLog(requestLogFile.getAbsolutePath()));
+        JettyServerFactory serverFactory = mock(JettyServerFactory.class);
+        when(serverFactory.create(0, 0, 0)).thenReturn(server);
+
+        String id = "customHTTP2";
+
+        // Register custom server
+        EmbeddedServers.add(id, new EmbeddedJettyFactory(serverFactory));
+        EmbeddedServer embeddedServer = EmbeddedServers.create(id, null, null, null, false);
+        assertNotNull(embeddedServer);
+
+        embeddedServer.trustForwardHeaders(true);
+        embeddedServer.ignite("localhost", 0, true, null, 0, 0, 0);
 
         assertTrue(requestLogFile.exists());
         embeddedServer.extinguish();

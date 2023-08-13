@@ -67,6 +67,8 @@ public final class Service extends Routable {
 
     protected SslStores sslStores;
 
+    private boolean useHTTP2 = false;
+
     protected Map<String, WebSocketHandlerWrapper> webSocketHandlers = null;
 
     protected int maxThreads = -1;
@@ -184,6 +186,26 @@ public final class Service extends Routable {
         } else {
             throw new IllegalStateException("This must be done after route mapping has begun");
         }
+    }
+
+    /**
+     * Retrieves whether Spark is HTTP2.
+     *
+     * @return The status of HTTP2 if true, it is enabled, false if disabled .
+     */
+    public boolean useHTTP2() {
+        return useHTTP2;
+    }
+
+    /**
+     * Sets / Resets Spark to HTTP2
+     * @param useHTTP2  The status of HTTP2 if true, it is enabled, false if disabled .
+     */
+    public void useHTTP2( boolean useHTTP2) {
+        if ( initialized ){
+            throw new IllegalStateException("This must be done before route mapping has begun");
+        }
+        this.useHTTP2 = useHTTP2;
     }
 
     /**
@@ -633,6 +655,7 @@ public final class Service extends Routable {
                     port = server.ignite(
                             ipAddress,
                             port,
+                            useHTTP2,
                             sslStores,
                             maxThreads,
                             minThreads,

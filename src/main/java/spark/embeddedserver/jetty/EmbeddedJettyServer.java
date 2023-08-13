@@ -84,6 +84,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     @Override
     public int ignite(String host,
                       int port,
+                      boolean useHTTP2,
                       SslStores sslStores,
                       int maxThreads,
                       int minThreads,
@@ -110,9 +111,9 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         ServerConnector connector;
 
         if (sslStores == null) {
-            connector = SocketConnectorFactory.createSocketConnector(server, host, port, trustForwardHeaders);
+            connector = SocketConnectorFactory.createSocketConnector(server, host, port, useHTTP2 ,trustForwardHeaders);
         } else {
-            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, trustForwardHeaders);
+            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, useHTTP2 ,trustForwardHeaders);
         }
 
         Connector previousConnectors[] = server.getConnectors();

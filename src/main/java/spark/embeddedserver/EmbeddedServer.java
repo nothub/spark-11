@@ -33,6 +33,7 @@ public interface EmbeddedServer {
      *
      * @param host                    The address to listen on
      * @param port                    - the port
+     * @param useHTTP2                - if true, use HTTP2 connection, if false use HTTP1.X
      * @param sslStores               - The SSL sslStores.
      * @param maxThreads              - max nbr of threads.
      * @param minThreads              - min nbr of threads.
@@ -40,6 +41,7 @@ public interface EmbeddedServer {
      */
     int ignite(String host,
                    int port,
+                   boolean useHTTP2,
                    SslStores sslStores,
                    int maxThreads,
                    int minThreads,

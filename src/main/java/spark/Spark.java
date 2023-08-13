@@ -1025,6 +1025,27 @@ public class Spark {
     }
 
     /**
+     * Set the HTTP mode that Spark should work on, default is false to HTTP1.x
+     * This has to be called before any route mapping is done.
+     * If true, then HTTP2 is used
+     *
+     * @param useHTTP2 The HTTP version - true for HTTP2, false for HTTP1.x
+     */
+    public static void useHTTP2(boolean useHTTP2) {
+        getInstance().useHTTP2(useHTTP2);
+    }
+
+    /**
+     * Retrieves the mode that Spark is operating.
+     *
+     * @return The HTTP mode, true if it is HTTP2, false if it is HTTP1.x.
+     * @throws IllegalStateException when the server is not started
+     */
+    public static boolean useHTTP2() {
+        return getInstance().useHTTP2();
+    }
+
+    /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
      * have to supply a keystore file, truststore file is optional (keystore
