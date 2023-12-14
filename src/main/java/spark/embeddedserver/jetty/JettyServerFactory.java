@@ -2,12 +2,13 @@ package spark.embeddedserver.jetty;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import spark.embeddedserver.VirtualThreadAware;
 
 /**
  * This interface can be implemented to provide custom Jetty server instances
  * with specific settings or features.
  */
-public interface JettyServerFactory {
+public interface JettyServerFactory extends VirtualThreadAware {
     /**
      * Creates a Jetty server.
      *

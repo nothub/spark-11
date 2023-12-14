@@ -1185,6 +1185,22 @@ public class Spark {
     }
 
     /**
+     * Making Spark use virtual threads in Java 21
+     * @param useVirtualThread if true use v-thread else system thread
+     */
+    public static void useVirtualThread(boolean useVirtualThread){
+        getInstance().useVThread(useVirtualThread);
+    }
+
+    /**
+     * Gets the current used thread type
+     * @return true if using v-thread false otherwise
+     */
+    public static boolean useVirtualThread(){
+        return getInstance().useVThread();
+    }
+
+    /**
      * Configures the embedded web server's thread pool.
      *
      * @param maxThreads        max nbr of threads.

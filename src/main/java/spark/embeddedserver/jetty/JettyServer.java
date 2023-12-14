@@ -17,13 +17,15 @@
 package spark.embeddedserver.jetty;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.VirtualThreads;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import spark.embeddedserver.VirtualThreadAware;
 
 /**
  * Creates Jetty Server instances.
  */
-class JettyServer implements JettyServerFactory {
+class JettyServer extends VirtualThreadAware.Base implements JettyServerFactory {
 
     /**
      * Creates a Jetty server.
@@ -34,19 +36,16 @@ class JettyServer implements JettyServerFactory {
      * @return a new jetty server instance
      */
     public Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
-        Server server;
-
+        final  QueuedThreadPool queuedThreadPool;
         if (maxThreads > 0) {
             int max = maxThreads;
             int min = (minThreads > 0) ? minThreads : 8;
             int idleTimeout = (threadTimeoutMillis > 0) ? threadTimeoutMillis : 60000;
-
-            server = new Server(new QueuedThreadPool(max, min, idleTimeout));
+            queuedThreadPool = new QueuedThreadPool(max, min, idleTimeout);
         } else {
-            server = new Server();
+            queuedThreadPool = new QueuedThreadPool();
         }
-
-        return server;
+        return create(queuedThreadPool);
     }
 
     /**
@@ -56,6 +55,12 @@ class JettyServer implements JettyServerFactory {
      */
     @Override
     public Server create(ThreadPool threadPool) {
-        return threadPool != null ? new Server(threadPool) : new Server();
+        if ( threadPool == null ){
+            threadPool = new QueuedThreadPool();
+        }
+        if ( useVThread && VirtualThreads.areSupported() && threadPool instanceof QueuedThreadPool ){
+            ((QueuedThreadPool)threadPool).setVirtualThreadsExecutor(VirtualThreads.getDefaultVirtualThreadsExecutor() );
+        }
+        return new Server( threadPool );
     }
 }

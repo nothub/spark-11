@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import spark.embeddedserver.EmbeddedServer;
+import spark.embeddedserver.VirtualThreadAware;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.embeddedserver.jetty.websocket.WebSocketServletContextHandlerFactory;
 import spark.ssl.SslStores;
@@ -43,7 +44,7 @@ import spark.ssl.SslStores;
  *
  * @author Per Wendel
  */
-public class EmbeddedJettyServer implements EmbeddedServer {
+public class EmbeddedJettyServer extends VirtualThreadAware.Proxy implements EmbeddedServer {
 
     private static final int SPARK_DEFAULT_PORT = 4567;
     private static final String NAME = "Spark";
@@ -61,6 +62,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private boolean trustForwardHeaders = true; // true by default
 
     public EmbeddedJettyServer(JettyServerFactory serverFactory, Handler handler) {
+        super(serverFactory);
         this.serverFactory = serverFactory;
         this.handler = handler;
     }
@@ -100,7 +102,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
                 port = SPARK_DEFAULT_PORT;
             }
         }
-
+        
         // Create instance of jetty server with either default or supplied queued thread pool
         if(threadPool == null) {
             server = serverFactory.create(maxThreads, minThreads, threadIdleTimeoutMillis);

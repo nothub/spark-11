@@ -25,7 +25,7 @@ import spark.ssl.SslStores;
 /**
  * Represents an embedded server that can be used in Spark. (this is currently Jetty by default).
  */
-public interface EmbeddedServer {
+public interface EmbeddedServer extends VirtualThreadAware{
 
     /**
      * Ignites the embedded server, listening on the specified port, running SSL secured with the specified keystore

@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import spark.embeddedserver.EmbeddedServer;
 import spark.embeddedserver.EmbeddedServers;
+import spark.embeddedserver.VirtualThreadAware;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerClassWrapper;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerInstanceWrapper;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
@@ -54,10 +55,11 @@ import static spark.globalstate.ServletFlag.isRunningFromServlet;
  * ...
  * http.get("/hello", (q, a) {@literal ->} "Hello World");
  */
-public final class Service extends Routable {
+public final class Service  extends Routable implements VirtualThreadAware {
     private static final Logger LOG = LoggerFactory.getLogger("spark.Spark");
 
     public static final int SPARK_DEFAULT_PORT = 4567;
+
     protected static final String DEFAULT_ACCEPT_TYPE = "*/*";
 
     protected boolean initialized = false;
@@ -118,6 +120,23 @@ public final class Service extends Routable {
         } else {
             staticFilesConfiguration = StaticFilesConfiguration.create();
         }
+    }
+
+    private boolean useVThread = false;
+
+    @Override
+    public void useVThread(boolean useVThread) {
+        this.useVThread = useVThread ;
+    }
+
+    public Service withVirtualThread(){
+        useVThread(true);
+        return this;
+    }
+
+    @Override
+    public boolean useVThread() {
+        return useVThread;
     }
 
     /**
@@ -651,7 +670,7 @@ public final class Service extends Routable {
 
                     server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
                     server.trustForwardHeaders(trustForwardHeaders);
-
+                    server.useVThread(useVThread);
                     port = server.ignite(
                             ipAddress,
                             port,
