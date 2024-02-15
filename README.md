@@ -8,7 +8,7 @@ Spark3-JDK17 - a tiny web framework for Java 9+!
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3-JDK17-SNAPSHOT</version>
+    <version>3.0</version>
 </dependency>
 ```
 Due to some issues, the parent got changed into `org.zoomba-lang` that we own.
@@ -30,7 +30,8 @@ When committing to the project please use Spark format configured in https://git
 3. Tests earlier using Powermock ( yes, bad idea ) - were removed - and custom reflection set in 
 4. All `javax` classes replaced by corresponding `jakarta` ( Java 9+ removed `javax` from base SDK ) as jetty chose to do it that way
 5. Refactoring the websockets - jetty 11 does it differently. 
-
+6. Migrated also to Java-21 fiber or Virtual threads - you can easily spawn virtual threads now 
+7. Start supporting HTTP 2.0 
 
 
 Getting started
@@ -40,7 +41,7 @@ Getting started
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3-JDK17-SNAPSHOT</version>
+    <version>3.0</version>
 </dependency>
 ```
 
