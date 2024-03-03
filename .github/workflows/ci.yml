@@ -21,4 +21,4 @@ jobs:
           distribution: 'temurin'
           check-latest: true
           cache: 'maven'
-      - run: ./mvnw test
+      - run: ./mvnw --batch-mode test
